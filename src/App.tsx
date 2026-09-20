@@ -10,9 +10,10 @@ import {
   type Attempt, type Settings
 } from './storage/repository';
 import { LearnPage, LibraryPage, NotFound, ProgressPage, SettingsPage, TunerPage } from './features/Pages';
+import { FingeringPage } from './features/FingeringPage';
 import { Practice, timeLabel } from './features/Practice';
 
-type RouteView = 'home' | 'learn' | 'songs' | 'practice' | 'tuner' | 'progress' | 'settings' | 'not-found';
+type RouteView = 'home' | 'learn' | 'songs' | 'practice' | 'tuner' | 'fingering' | 'progress' | 'settings' | 'not-found';
 
 type RouteState = {
   view: RouteView;
@@ -28,6 +29,7 @@ function parseHash(hash: string): RouteState {
   if (segment === 'practice') return { view: 'practice', param: param || arrangements[0].id };
   if (segment === 'tools' && param === 'tuner') return { view: 'tuner' };
   if (segment === 'tuner') return { view: 'tuner' };
+  if (segment === 'fingering' || (segment === 'tools' && param === 'fingering')) return { view: 'fingering' };
   if (segment === 'progress') return { view: 'progress' };
   if (segment === 'settings') return { view: 'settings' };
   return { view: 'not-found' };
@@ -339,6 +341,7 @@ export function App() {
     if (route.view === 'songs') return 'songs';
     if (route.view === 'practice') return 'practice';
     if (route.view === 'tuner') return 'tuner';
+    if (route.view === 'fingering') return 'fingering';
     if (route.view === 'progress') return 'progress';
     if (route.view === 'settings') return 'settings';
     return 'home';
@@ -385,6 +388,12 @@ export function App() {
             onClick={() => { window.location.hash = '/tools/tuner'; }}
           >
             Tuner
+          </button>
+          <button
+            className={activeNav === 'fingering' ? 'is-active' : ''}
+            onClick={() => { window.location.hash = '/fingering'; }}
+          >
+            Fingering
           </button>
           <button
             className={activeNav === 'progress' ? 'is-active' : ''}
@@ -455,6 +464,12 @@ export function App() {
           <TunerPage
             settings={settings}
             updateSettings={handleUpdateSettings}
+          />
+        )}
+
+        {route.view === 'fingering' && (
+          <FingeringPage
+            settings={settings}
           />
         )}
 

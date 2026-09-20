@@ -58,10 +58,18 @@ test('catalog has playable original studies, ten complete lessons, and ready son
   assert.ok(arrangements.flatMap(item => item.events).some(event => event.kind === 'rest'));
 });
 
-test('fingering resolver never generates hole patterns without teacher verification', () => {
-  assert.ok(fingeringProfiles.every(profile => profile.fingerings.length === 0));
-  assert.equal(resolveFingering('six-hole-unverified', 'Sa'), undefined);
+test('fingering resolver never generates unverified patterns and provides standard 6-hole fingerings', () => {
+  const unverified = fingeringProfiles.find(p => p.id === 'six-hole-unverified');
+  assert.ok(unverified && unverified.fingerings.length === 0);
+  assert.equal(resolveFingering('six-hole-unverified', 'sa-middle'), undefined);
   assert.equal(resolveFingering('unknown', 'some-fingering'), undefined);
+
+  const standard = fingeringProfiles.find(p => p.id === 'standard-six-hole');
+  assert.ok(standard && standard.fingerings.length >= 19);
+  const sa = resolveFingering('standard-six-hole', 'sa-middle');
+  assert.ok(sa);
+  assert.deepEqual(sa.holes, ['closed', 'closed', 'closed', 'open', 'open', 'open']);
+  assert.equal(sa.register, 'middle');
 });
 
 test('score validator catches overlaps, silent gaps, duplicate IDs, invalid timing, spelling, and broken references', () => {

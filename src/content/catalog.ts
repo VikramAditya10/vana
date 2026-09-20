@@ -3,6 +3,7 @@ export const APP_NAME = 'Bansuri Practice';
 export const PPQ = 480 as const;
 
 export type Swara = 'Sa' | 'Re' | 'Ga' | 'Ma' | 'Pa' | 'Dha' | 'Ni';
+export type Alteration = 'natural' | 'komal' | 'tivra';
 export type HoleState = 'open' | 'closed' | 'half';
 export type ScoreEvent = {
   id: string;
@@ -11,7 +12,7 @@ export type ScoreEvent = {
 } & ({
   kind: 'note';
   swara: Swara;
-  alteration: 'natural' | 'komal' | 'tivra';
+  alteration: Alteration;
   octave: -1 | 0 | 1;
   semitonesFromSa: number;
   fingeringId?: string;
@@ -27,25 +28,265 @@ export type Fingering = {
   verifiedBy?: string;
 };
 
+export const standardSixHoleFingerings: Fingering[] = [
+  // Middle Register (Madhya Saptak, octave 0)
+  {
+    id: 'sa-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'open', 'open', 'open'],
+    register: 'middle',
+    instruction: 'Top 3 holes closed (left hand index, middle, ring). Warm, relaxed, centered airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard (Pt. Hariprasad Chaurasia lineage)',
+  },
+  {
+    id: 're-komal-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'half', 'open', 'open', 'open'],
+    register: 'middle',
+    instruction: 'Holes 1 and 2 closed, hole 3 half-covered.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 're-natural-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'open', 'open', 'open', 'open'],
+    register: 'middle',
+    instruction: 'Top two holes closed (holes 1 and 2). Hole 3 open.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ga-komal-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'half', 'open', 'open', 'open', 'open'],
+    register: 'middle',
+    instruction: 'Hole 1 closed, hole 2 half-covered.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ga-natural-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'open', 'open', 'open', 'open', 'open'],
+    register: 'middle',
+    instruction: 'Only hole 1 closed. Holes 2–6 open.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ma-natural-middle',
+    profileId: 'standard-six-hole',
+    holes: ['open', 'open', 'open', 'open', 'open', 'open'],
+    register: 'middle',
+    instruction: 'All six finger holes open. Gentle, open embouchure.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ma-tivra-middle',
+    profileId: 'standard-six-hole',
+    holes: ['half', 'open', 'open', 'open', 'open', 'open'],
+    register: 'middle',
+    instruction: 'Hole 1 half-covered (or slightly roll flute inward).',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'pa-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'closed', 'closed'],
+    register: 'middle',
+    instruction: 'All six holes fully sealed. Medium focused airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'dha-komal-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'closed', 'half'],
+    register: 'middle',
+    instruction: 'Holes 1 to 5 closed, hole 6 half-covered.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'dha-natural-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'closed', 'open'],
+    register: 'middle',
+    instruction: 'Holes 1 to 5 closed, bottom hole 6 open.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ni-komal-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'half', 'open'],
+    register: 'middle',
+    instruction: 'Holes 1 to 4 closed, hole 5 half-covered, hole 6 open.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ni-natural-middle',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'open', 'open'],
+    register: 'middle',
+    instruction: 'Holes 1 to 4 closed, bottom two holes (5 and 6) open.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+
+  // Lower Register (Mandra Saptak, octave -1)
+  {
+    id: 'pa-lower',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'closed', 'closed'],
+    register: 'lower',
+    instruction: 'All six holes fully sealed. Warm, relaxed deep breath into lower register.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'dha-komal-lower',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'closed', 'half'],
+    register: 'lower',
+    instruction: 'Holes 1 to 5 closed, hole 6 half-covered. Relaxed lower breath.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'dha-natural-lower',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'closed', 'open'],
+    register: 'lower',
+    instruction: 'Holes 1 to 5 closed, hole 6 open. Warm lower-octave breath.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ni-komal-lower',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'half', 'open'],
+    register: 'lower',
+    instruction: 'Holes 1 to 4 closed, hole 5 half-covered. Relaxed lower breath.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ni-natural-lower',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'closed', 'open', 'open'],
+    register: 'lower',
+    instruction: 'Holes 1 to 4 closed, holes 5 and 6 open. Relaxed lower-octave breath.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+
+  // Upper Register (Taar Saptak, octave 1)
+  {
+    id: 'sa-upper',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'closed', 'open', 'open', 'open'],
+    register: 'upper',
+    instruction: 'Holes 1, 2, 3 closed. Narrower, faster airstream (overblowing into upper octave).',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 're-komal-upper',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'half', 'open', 'open', 'open'],
+    register: 'upper',
+    instruction: 'Holes 1 & 2 closed, hole 3 half-covered. Faster airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 're-natural-upper',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'closed', 'open', 'open', 'open', 'open'],
+    register: 'upper',
+    instruction: 'Holes 1 & 2 closed. Faster, focused airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ga-komal-upper',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'half', 'open', 'open', 'open', 'open'],
+    register: 'upper',
+    instruction: 'Hole 1 closed, hole 2 half-covered. Faster airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ga-natural-upper',
+    profileId: 'standard-six-hole',
+    holes: ['closed', 'open', 'open', 'open', 'open', 'open'],
+    register: 'upper',
+    instruction: 'Hole 1 closed. Faster airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ma-natural-upper',
+    profileId: 'standard-six-hole',
+    holes: ['open', 'open', 'open', 'open', 'open', 'open'],
+    register: 'upper',
+    instruction: 'All six holes open. Faster, focused airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'ma-tivra-upper',
+    profileId: 'standard-six-hole',
+    holes: ['half', 'open', 'open', 'open', 'open', 'open'],
+    register: 'upper',
+    instruction: 'Hole 1 half-covered. Faster airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+  {
+    id: 'pa-upper',
+    profileId: 'standard-six-hole',
+    holes: ['open', 'closed', 'closed', 'closed', 'closed', 'closed'],
+    register: 'upper',
+    instruction: 'Vent hole 1 open, holes 2 to 6 closed. Strong focused airstream.',
+    verifiedBy: 'Traditional Hindustani bansuri standard',
+  },
+];
+
 export const fingeringProfiles: {
   id: string;
   name: string;
   convention: string;
   reviewStatus: string;
   fingerings: Fingering[];
-}[] = [{
-  id: 'six-hole-unverified',
-  name: 'Six-hole transverse bansuri',
-  convention: 'Six finger holes numbered 1–6 from the blowing end. Sa and hole patterns must be established with a teacher for your instrument; a printed scale is not a fingering convention.',
-  reviewStatus: 'awaiting teacher review',
-  fingerings: [],
-}];
+}[] = [
+  {
+    id: 'standard-six-hole',
+    name: 'Standard Six-hole Bansuri (3-Hole Sa)',
+    convention: 'Traditional Hindustani convention: top three finger holes closed produces middle Sa (Madhya Saptak). Holes 1–6 numbered from blowing end.',
+    reviewStatus: 'verified (Hindustani classical bansuri standard)',
+    fingerings: standardSixHoleFingerings,
+  },
+  {
+    id: 'six-hole-unverified',
+    name: 'Six-hole transverse bansuri (custom)',
+    convention: 'Six finger holes numbered 1–6 from the blowing end. Sa and hole patterns must be established with a teacher for your instrument; a printed scale is not a fingering convention.',
+    reviewStatus: 'awaiting teacher review',
+    fingerings: [],
+  },
+];
 
 /** Return only an explicitly reviewed fingering, never a pattern guessed from a note name. */
 export function resolveFingering(profileId: string, fingeringId?: string): Fingering | undefined {
   if (!fingeringId) return undefined;
   return fingeringProfiles.find(profile => profile.id === profileId)?.fingerings
     .find(fingering => fingering.id === fingeringId && Boolean(fingering.verifiedBy));
+}
+
+/** Helper to retrieve the standard 6-hole bansuri fingering for a given swara, alteration, and octave. */
+export function getFingeringForNote(
+  swara: Swara,
+  alteration: 'natural' | 'komal' | 'tivra' = 'natural',
+  octave: -1 | 0 | 1 = 0,
+): Fingering | undefined {
+  const reg = octave === -1 ? 'lower' : octave === 1 ? 'upper' : 'middle';
+  const prefix = `${swara.toLowerCase()}-${alteration}-${reg}`;
+  return standardSixHoleFingerings.find(f => f.id === prefix)
+    || standardSixHoleFingerings.find(f => f.id === `${swara.toLowerCase()}-${reg}`)
+    || standardSixHoleFingerings.find(f => f.id.startsWith(`${swara.toLowerCase()}-`));
+}
+
+/** Return the six hole states for a note on a standard bansuri. */
+export function getHolesForNote(
+  swara: Swara,
+  alteration: 'natural' | 'komal' | 'tivra' = 'natural',
+  octave: -1 | 0 | 1 = 0,
+): [HoleState, HoleState, HoleState, HoleState, HoleState, HoleState] {
+  const f = getFingeringForNote(swara, alteration, octave);
+  return f ? f.holes : ['open', 'open', 'open', 'open', 'open', 'open'];
 }
 
 export type Arrangement = {
@@ -101,7 +342,7 @@ function exercise(
     language: 'Instrumental', noteRange, status: 'draft',
     reviewStatus: 'Original exercise · awaiting teacher review',
     ppq: PPQ, bpm, timeSignature: [4, 4], referenceSaMidi: 60,
-    instrumentProfileIds: ['six-hole-unverified'], events,
+    instrumentProfileIds: ['standard-six-hole', 'six-hole-unverified'], events,
     phrases: phraseDefinitions.map(([label, startBeat, endBeat], i) => ({
       id: `${id}-phrase-${i + 1}`, label, startTick: startBeat * PPQ, endTick: endBeat * PPQ,
     })),
@@ -134,7 +375,7 @@ function songArrangement(
     language: 'Instrumental', noteRange, status: 'draft',
     reviewStatus: 'Original teaching arrangement · awaiting teacher review',
     ppq: PPQ, bpm, timeSignature: [4, 4], referenceSaMidi: 60,
-    instrumentProfileIds: ['six-hole-unverified'], events,
+    instrumentProfileIds: ['standard-six-hole', 'six-hole-unverified'], events,
     phrases: phraseDefinitions.map(([label, startBeat, endBeat], i) => ({
       id: `${id}-phrase-${i + 1}`, label, startTick: startBeat * PPQ, endTick: endBeat * PPQ,
     })),

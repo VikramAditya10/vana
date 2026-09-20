@@ -23,14 +23,29 @@ export function useMicrophone(onFrame?: (frame: PitchFrame) => void) {
   return { frame, status, error, start: async () => { setStatus('permission needed'); try { await mic.current?.start(); } catch (e) { setError(e instanceof Error ? e.message : 'Microphone unavailable'); } if (mic.current) { setStatus(mic.current.status); setError(mic.current.error); } }, stop: () => { mic.current?.stop(); setStatus('off'); setFrame({ hz: null, confidence: 0, rms: 0, time: 0 }); }, calibrate: () => mic.current?.calibrate(), actualSettings: () => mic.current?.actualSettings };
 }
 
-export function FingeringDiagram({ compact = false, holes, noteLabel }: { compact?: boolean; holes?: ('open' | 'closed' | 'half')[]; noteLabel?: string }) {
+export function FingeringDiagram({
+  compact = false,
+  holes,
+  noteLabel,
+  instruction,
+  register,
+}: {
+  compact?: boolean;
+  holes?: ('open' | 'closed' | 'half')[];
+  noteLabel?: string;
+  instruction?: string;
+  register?: 'lower' | 'middle' | 'upper';
+}) {
   const hasHoles = Boolean(holes && holes.length === 6);
   return <figure className={`flute-figure ${compact ? 'compact' : ''}`}>
     <div className="flute-figure-header">
-      <span className="eyebrow">SIX-HOLE BANSURI {noteLabel ? `· ${noteLabel.toUpperCase()}` : '· ANATOMY'}</span>
+      <span className="eyebrow">
+        SIX-HOLE BANSURI {noteLabel ? `· ${noteLabel.toUpperCase()}` : '· ANATOMY'}
+        {register ? ` · ${register.toUpperCase()}` : ''}
+      </span>
       {hasHoles ? <span className="hole-summary">{holes!.map((h, i) => `H${i + 1}:${h[0].toUpperCase()}`).join(' ')}</span> : null}
     </div>
-    <svg viewBox="0 0 480 140" role="img" aria-label={hasHoles ? `Six-hole transverse bansuri fingering for ${noteLabel || 'note'}: ${holes!.map((h, i) => `hole ${i + 1} is ${h}`).join(', ')}` : "Six-hole transverse bansuri: blowing hole at the left, finger holes numbered one to six from the blowing end. No verified fingering pattern is available."}>
+    <svg viewBox="0 0 480 150" role="img" aria-label={hasHoles ? `Six-hole transverse bansuri fingering for ${noteLabel || 'note'}: ${holes!.map((h, i) => `hole ${i + 1} is ${h}`).join(', ')}` : "Six-hole transverse bansuri: blowing hole at the left, finger holes numbered one to six from the blowing end. No verified fingering pattern is available."}>
       <defs>
         <linearGradient id="half-hole" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="50%" stopColor="var(--dossier-ink)" />
@@ -45,6 +60,13 @@ export function FingeringDiagram({ compact = false, holes, noteLabel }: { compac
       <ellipse cx="72" cy="71" rx="14" ry="9" fill="var(--dossier-ink)" />
       <path d="M72 42V22 M67 27L72 22L77 27" fill="none" stroke="currentColor" />
       <text x="72" y="14" textAnchor="middle" className="svg-label">BLOWING END</text>
+
+      {/* Hand bracket guides */}
+      <path d="M164 36 H258" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" opacity=".4" />
+      <text x="211" y="30" textAnchor="middle" className="svg-hand-label">LEFT HAND (1–3)</text>
+      <path d="M305 36 H399" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" opacity=".4" />
+      <text x="352" y="30" textAnchor="middle" className="svg-hand-label">RIGHT HAND (4–6)</text>
+
       {/* Six finger holes */}
       {[164, 211, 258, 305, 352, 399].map((x, i) => {
         const state = holes?.[i];
@@ -67,11 +89,14 @@ export function FingeringDiagram({ compact = false, holes, noteLabel }: { compac
     </svg>
     <figcaption>
       {hasHoles ? (
-        <div className="hole-text-grid">
-          {holes!.map((state, i) => (
-            <span key={i} className={`hole-pill hole-${state}`}>Hole {i + 1}: <b>{state}</b></span>
-          ))}
-        </div>
+        <>
+          <div className="hole-text-grid">
+            {holes!.map((state, i) => (
+              <span key={i} className={`hole-pill hole-${state}`}>Hole {i + 1}: <b>{state}</b></span>
+            ))}
+          </div>
+          {instruction && <div className="fingering-instruction">{instruction}</div>}
+        </>
       ) : (
         <>
           <Status tone="warning">Fingering not available</Status>

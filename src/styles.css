@@ -605,6 +605,30 @@ main {
   color: var(--dossier-paper, #f7f5f0);
 }
 
+.hole-pill.hole-half {
+  background: var(--dossier-paper-muted, #efece5);
+  border-color: var(--dossier-accent-blue, #0d63b8);
+  color: var(--dossier-accent-blue, #0d63b8);
+  font-weight: 600;
+}
+
+.svg-hand-label {
+  font-size: 8px;
+  font-family: inherit;
+  fill: var(--dossier-ink-muted, #737373);
+  letter-spacing: 0.5px;
+}
+
+.fingering-instruction {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--dossier-ink-soft, #4f4f4f);
+  background: var(--dossier-paper-muted, #efece5);
+  padding: 8px 12px;
+  border-left: 2px solid var(--dossier-accent-blue, #0d63b8);
+  margin-top: 6px;
+}
+
 /* ==========================================================
    SONG LIBRARY
    ========================================================== */

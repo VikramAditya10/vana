@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, Callout, Checkbox, ConfirmDialog, DocumentHeader, EmptyState, Input, Metric, MetricGroup, NumberInput, Progress, SearchInput, Section, Select, Status, Tag } from '@vikramaditya1010/react';
-import { arrangements, lessons, songs, type Lesson } from '../content/catalog';
+import { arrangements, getFingeringForNote, lessons, songs, type Lesson, type Swara } from '../content/catalog';
 import { AudioTransport } from '../audio/transport';
 import { midiName, midiToHz, hzToMidi } from '../audio/pitch';
 import { exportData, importData, resetData, setLessonComplete, type Attempt, type Settings } from '../storage/repository';
@@ -23,7 +23,22 @@ export function LearnPage({ completed, lessonId, refresh }: { completed: string[
 
 function LessonPage({ lesson, completed, refresh }: { lesson: Lesson; completed: boolean; refresh: () => void }) {
   const [checks, setChecks] = useState<string[]>(completed ? lesson.checklist : []);
-  return <><a href="#/learn" className="back-link">← All lessons</a><DocumentHeader kicker={`LESSON ${String(lesson.number).padStart(2, '0')} / ${lesson.durationMinutes} MINUTES`} title={lesson.title} description={lesson.description} /><div className="two-column"><article className="reading-panel"><p className="reading-copy">{lesson.explanation}</p><FingeringDiagram /><div className="illustration-caption">{lesson.illustration}</div><Section title="Watch for these common mistakes" index="01"><ul className="reading-list">{lesson.mistakes.map(m => <li key={m}>{m}</li>)}</ul></Section></article><aside><Section title="Put it into practice" index="02"><p>Hear the exercise, slow it down, and try one phrase.</p><a className="action-link" href={`#/practice/${lesson.exerciseId}`}>Open playable exercise ↗</a></Section><Section title="Your lesson checklist" index="03"><div className="checklist">{lesson.checklist.map(c => <Checkbox key={c} label={c} checked={checks.includes(c)} onChange={e => setChecks(e.target.checked ? [...checks, c] : checks.filter(x => x !== c))} />)}</div><Button variant="solid" disabled={!completed && checks.length !== lesson.checklist.length} onClick={() => { setLessonComplete(lesson.id, !completed); refresh(); }}>{completed ? 'Mark as incomplete' : 'Complete lesson'}</Button><p className="fine-print">Completion records your own practice, not an assessment.</p></Section>{lesson.number < lessons.length && <a href={`#/learn/${lessons[lesson.number].id}`} className="back-link">Next lesson →</a>}</aside></div></>;
+  const lessonSwaraMap: Record<string, { swara: Swara; alteration?: 'natural' | 'komal' | 'tivra'; octave?: -1 | 0 | 1; label: string }> = {
+    'holding-your-bansuri': { swara: 'Sa', label: 'Sa · Home Note' },
+    'first-tone': { swara: 'Sa', label: 'Sa · Middle Octave' },
+    'breath-control': { swara: 'Sa', label: 'Sa · Sustained Note' },
+    'holes-and-seals': { swara: 'Sa', label: 'Sa · Holes 1–3 Closed' },
+    'relative-pitch': { swara: 'Sa', label: 'Sa · Tonic Center' },
+    'ascending-descending': { swara: 'Re', label: 'Re · Second Step' },
+    'beats-and-rests': { swara: 'Sa', label: 'Sa · Timed Note' },
+    'simple-alankars': { swara: 'Ga', label: 'Ga · Third Step' },
+    'articulation': { swara: 'Sa', label: 'Sa · Tongued Note' },
+    'phrase-by-phrase': { swara: 'Pa', label: 'Pa · All 6 Holes Closed' },
+  };
+  const target = lessonSwaraMap[lesson.id] ?? { swara: 'Sa', label: 'Sa' };
+  const fingering = getFingeringForNote(target.swara, target.alteration, target.octave);
+
+  return <><a href="#/learn" className="back-link">← All lessons</a><DocumentHeader kicker={`LESSON ${String(lesson.number).padStart(2, '0')} / ${lesson.durationMinutes} MINUTES`} title={lesson.title} description={lesson.description} /><div className="two-column"><article className="reading-panel"><p className="reading-copy">{lesson.explanation}</p><FingeringDiagram holes={fingering?.holes} noteLabel={target.label} instruction={fingering?.instruction} register={fingering?.register} /><div style={{ marginBottom: 12 }}><a href="#/fingering" className="action-link" style={{ fontSize: 11 }}>View interactive 6-hole Fingering Chart ↗</a></div><div className="illustration-caption">{lesson.illustration}</div><Section title="Watch for these common mistakes" index="01"><ul className="reading-list">{lesson.mistakes.map(m => <li key={m}>{m}</li>)}</ul></Section></article><aside><Section title="Put it into practice" index="02"><p>Hear the exercise, slow it down, and try one phrase.</p><a className="action-link" href={`#/practice/${lesson.exerciseId}`}>Open playable exercise ↗</a></Section><Section title="Your lesson checklist" index="03"><div className="checklist">{lesson.checklist.map(c => <Checkbox key={c} label={c} checked={checks.includes(c)} onChange={e => setChecks(e.target.checked ? [...checks, c] : checks.filter(x => x !== c))} />)}</div><Button variant="solid" disabled={!completed && checks.length !== lesson.checklist.length} onClick={() => { setLessonComplete(lesson.id, !completed); refresh(); }}>{completed ? 'Mark as incomplete' : 'Complete lesson'}</Button><p className="fine-print">Completion records your own practice, not an assessment.</p></Section>{lesson.number < lessons.length && <a href={`#/learn/${lessons[lesson.number].id}`} className="back-link">Next lesson →</a>}</aside></div></>;
 }
 
 export function LibraryPage({ songId, bookmarks, toggleBookmark }: { songId?: string; bookmarks: string[]; toggleBookmark: (id: string) => void }) {

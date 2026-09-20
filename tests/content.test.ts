@@ -33,22 +33,26 @@ function attempt(overrides: Partial<Attempt> = {}): Attempt {
   };
 }
 
-test('catalog has six playable original studies, ten complete lessons, and pending songs without invented arrangements', () => {
-  assert.ok(arrangements.length >= 6);
+test('catalog has playable original studies, ten complete lessons, and ready song arrangements', () => {
+  assert.ok(arrangements.length >= 12);
   assert.ok(lessons.length >= 10);
   for (const arrangement of arrangements) {
     assert.deepEqual(validateArrangement(arrangement), [], arrangement.id);
     assert.equal(arrangement.status, 'draft');
     assert.match(arrangement.reviewStatus, /awaiting teacher review/);
-    assert.match(arrangement.source.permissionStatus, /Original/);
-    assert.equal(arrangement.songId, undefined);
+    if (arrangement.songId) {
+      assert.ok(songs.some(song => song.id === arrangement.songId), `Arrangement ${arrangement.id} links to valid song`);
+    } else {
+      assert.match(arrangement.source.permissionStatus, /Original/);
+    }
   }
   for (const lesson of lessons) {
     assert.ok(lesson.explanation && lesson.illustration && lesson.mistakes.length && lesson.checklist.length);
     assert.ok(arrangements.some(arrangement => arrangement.id === lesson.exerciseId));
   }
   assert.equal(songs.length, 6);
-  assert.ok(songs.every(song => song.status === 'pending'));
+  assert.ok(songs.every(song => song.status === 'ready'));
+  assert.ok(songs.every(song => arrangements.some(arr => arr.songId === song.id)));
   assert.ok(arrangements.flatMap(item => item.events).some(event => event.durationTicks === 240));
   assert.ok(arrangements.flatMap(item => item.events).some(event => event.durationTicks === 720));
   assert.ok(arrangements.flatMap(item => item.events).some(event => event.kind === 'rest'));

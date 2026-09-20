@@ -123,6 +123,39 @@ function exercise(
   };
 }
 
+function songArrangement(
+  id: string, songId: string, title: string, description: string, bpm: number, notes: WrittenNote[],
+  phraseDefinitions: [string, number, number][], noteRange: string, prerequisites: string[],
+  difficulty: Arrangement['difficulty'] = 'Beginner',
+): Arrangement {
+  const events = score(id, notes);
+  return {
+    id, songId, version: 1, title, description, difficulty, prerequisites,
+    language: 'Instrumental', noteRange, status: 'draft',
+    reviewStatus: 'Original teaching arrangement · awaiting teacher review',
+    ppq: PPQ, bpm, timeSignature: [4, 4], referenceSaMidi: 60,
+    instrumentProfileIds: ['six-hole-unverified'], events,
+    phrases: phraseDefinitions.map(([label, startBeat, endBeat], i) => ({
+      id: `${id}-phrase-${i + 1}`, label, startTick: startBeat * PPQ, endTick: endBeat * PPQ,
+    })),
+    breathMarks: events.filter(event => event.kind === 'rest').map(event => ({
+      tick: event.startTick, text: 'Release the breath; inhale comfortably if needed.',
+    })),
+    source: {
+      author: 'Bansuri Practice',
+      permissionStatus: 'Original beginner teaching arrangement based on traditional melody; simplified for practice.',
+    },
+    credits: ['Arrangement: Bansuri Practice', 'Teaching content: draft; teacher review pending'],
+    arrangementAuthor: 'Bansuri Practice',
+    arrangementType: 'Simplified teaching melody in equal-tempered reference pitches. No recorded performance.',
+    audioAssets: [{
+      kind: 'synthesised', author: 'Bansuri Practice',
+      permissionStatus: 'Generated locally by this application; no third-party recordings.',
+      description: 'A synthesised teaching tone, not a recorded bansuri.',
+    }],
+  };
+}
+
 export const arrangements: Arrangement[] = [
   exercise('steady-sa', 'Your first steady Sa',
     'Listen for a steady pitch. Play a comfortable three-beat tone, then release and rest. Do not force a long breath.',
@@ -153,6 +186,84 @@ export const arrangements: Arrangement[] = [
     80, [['Sa', 1.5], ['Re', .5], ['Ga', 1], ['Ma', 1], ['Ga', 1.5], ['Re', .5], ['Sa', 1], ['rest', 1],
       ['Ga', 1.5], ['Ma', .5], ['Pa', 1], ['Ga', 1], ['Re', 1], ['Sa', 2], ['rest', 1]],
     [['Phrase A · a gentle rise', 0, 8], ['Phrase B · coming home', 8, 16]], 'Middle Sa–Pa', ['phrase-by-phrase', 'beats-and-rests']),
+  songArrangement('arr-lag-ja-gale', 'lag-ja-gale', 'Lag Ja Gale',
+    'Classic Hindi melody arranged for six-hole bansuri beginners. Notice the gentle descent to lower Dha and comfortable four-beat breathing rests.',
+    68, [
+      ['Sa', 1], ['Re', 1], ['Ga', 1.5], ['Ga', .5],
+      ['Re', 1], ['Ga', 1], ['Re', 1], ['Sa', 1],
+      ['Dha', 1, -1], ['Sa', 1], ['Re', 1.5], ['Re', .5],
+      ['Sa', 2], ['rest', 2],
+      ['Sa', 1], ['Re', 1], ['Ga', 1.5], ['Ga', .5],
+      ['Pa', 1], ['Ga', 1], ['Re', 1], ['Sa', 1],
+      ['Dha', 1, -1], ['Sa', 1], ['Re', 1], ['Re', 1],
+      ['Sa', 2], ['rest', 2]
+    ],
+    [['Phrase 1 · Lag ja gale', 0, 16], ['Phrase 2 · Shayad phir is janam', 16, 32]], 'Lower Dha–middle Pa', ['relative-pitch', 'beats-and-rests']),
+  songArrangement('arr-kal-ho-naa-ho', 'kal-ho-naa-ho', 'Kal Ho Naa Ho',
+    'Heartfelt melody arranged phrase-by-phrase with 4/4 meter. Practise smooth transitions between Ga, Ma, and Pa.',
+    76, [
+      ['Ga', 1], ['Ma', 1], ['Pa', 1.5], ['Pa', .5],
+      ['Ma', 1], ['Ga', 1], ['Re', 1], ['Ga', 1],
+      ['Ga', 1], ['Ma', 1], ['Pa', 1.5], ['Pa', .5],
+      ['Ma', 1], ['Ga', 1], ['Re', 2],
+      ['Re', 1], ['Ga', 1], ['Ma', 1.5], ['Ma', .5],
+      ['Ga', 1], ['Re', 1], ['Sa', 1], ['Re', 1],
+      ['Re', 1], ['Ga', 1], ['Ma', 1], ['Ga', 1],
+      ['Re', 1], ['Sa', 2], ['rest', 1]
+    ],
+    [['Phrase 1 · Har ghadi badal rahi hai', 0, 16], ['Phrase 2 · Har pal yahan jee bhar jiyo', 16, 32]], 'Middle Sa–Pa', ['simple-alankars', 'beats-and-rests']),
+  songArrangement('arr-tum-hi-ho', 'tum-hi-ho', 'Tum Hi Ho',
+    'Soulful melody arranged for relaxed phrasing from middle Sa to Pa. Keep your airstream soft and unforced.',
+    70, [
+      ['Sa', 1], ['Re', 1], ['Ga', 1.5], ['Ga', .5],
+      ['Re', 1], ['Ga', 1], ['Re', 1], ['Sa', 1],
+      ['Re', 1], ['Ga', 1], ['Ma', 1.5], ['Ga', .5],
+      ['Re', 2], ['rest', 2],
+      ['Ga', 1], ['Ma', 1], ['Pa', 1.5], ['Pa', .5],
+      ['Ma', 1], ['Ga', 1], ['Re', 1], ['Ga', 1],
+      ['Re', 1], ['Sa', 1], ['Re', 1.5], ['Re', .5],
+      ['Sa', 2], ['rest', 2]
+    ],
+    [['Phrase 1 · Hum tere bin', 0, 16], ['Phrase 2 · Kyunki tum hi ho', 16, 32]], 'Middle Sa–Pa', ['relative-pitch', 'phrase-by-phrase']),
+  songArrangement('arr-pehla-nasha', 'pehla-nasha', 'Pehla Nasha',
+    'Gentle romantic melody featuring comfortable leaps and lower Dha grounding. Listen once before repeating.',
+    74, [
+      ['Ga', 1.5], ['Ga', .5], ['Re', 1], ['Sa', 1],
+      ['Re', 1.5], ['Re', .5], ['Sa', 1], ['Dha', 1, -1],
+      ['Sa', 1], ['Re', 1], ['Ga', 1], ['Ma', 1],
+      ['Ga', 2], ['rest', 2],
+      ['Ga', 1.5], ['Ga', .5], ['Re', 1], ['Sa', 1],
+      ['Re', 1.5], ['Re', .5], ['Sa', 1], ['Dha', 1, -1],
+      ['Sa', 1], ['Re', 1], ['Ga', 1], ['Re', 1],
+      ['Sa', 2], ['rest', 2]
+    ],
+    [['Phrase 1 · Pehla nasha pehla khumaar', 0, 16], ['Phrase 2 · Naya pyaar hai naya intezaar', 16, 32]], 'Lower Dha–middle Ma', ['simple-alankars', 'beats-and-rests']),
+  songArrangement('arr-kesariya', 'kesariya', 'Kesariya',
+    'Warm contemporary melody arranged with steady beats and approachable middle-octave range.',
+    76, [
+      ['Pa', 1], ['Dha', 1], ['Sa', 1.5, 1], ['Sa', .5, 1],
+      ['Sa', 1, 1], ['Ni', 1], ['Dha', 1], ['Pa', 1],
+      ['Ma', 1], ['Ga', 1], ['Re', 1.5], ['Ga', .5],
+      ['Re', 2], ['rest', 2],
+      ['Ga', 1], ['Ma', 1], ['Pa', 1.5], ['Pa', .5],
+      ['Ma', 1], ['Ga', 1], ['Re', 1], ['Sa', 1],
+      ['Re', 1], ['Ga', 1], ['Re', 1], ['Re', 1],
+      ['Sa', 2], ['rest', 2]
+    ],
+    [['Phrase 1 · Kesariya tera ishq hai piya', 0, 16], ['Phrase 2 · Rang jaaun jo main haath lagaaun', 16, 32]], 'Middle Sa–upper Sa', ['ascending-descending', 'phrase-by-phrase'], 'Early intermediate'),
+  songArrangement('arr-vaseegara', 'vaseegara', 'Vaseegara · வசீகரா',
+    'Beloved Tamil melody arranged phrase-by-phrase in middle Sa–Dha range. Follow the four-beat cycle with ease.',
+    68, [
+      ['Ga', 1], ['Ma', 1], ['Pa', 1.5], ['Dha', .5],
+      ['Pa', 1], ['Ma', 1], ['Ga', 1], ['Ma', 1],
+      ['Ga', 1], ['Re', 1], ['Sa', 1], ['Re', 1],
+      ['Ga', 2], ['rest', 2],
+      ['Ga', 1], ['Ma', 1], ['Pa', 1.5], ['Dha', .5],
+      ['Pa', 1], ['Ma', 1], ['Ga', 1], ['Re', 1],
+      ['Sa', 1], ['Re', 1], ['Ga', 1], ['Re', 1],
+      ['Sa', 2], ['rest', 2]
+    ],
+    [['Phrase 1 · Vaseegara en nenjinikkum', 0, 16], ['Phrase 2 · Un pon madiyil thoonginal podhum', 16, 32]], 'Middle Sa–middle Dha', ['relative-pitch', 'phrase-by-phrase']),
 ];
 
 export type Lesson = {
@@ -256,14 +367,14 @@ export const lessons: Lesson[] = lessonContent.map((lesson, index) => ({
   ...lesson, number: index + 1, reviewStatus: 'Draft instructional content · awaiting bansuri teacher review',
 }));
 
-export type Song = { id: string; title: string; language: string; status: 'pending'; description: string };
+export type Song = { id: string; title: string; language: string; status: 'ready' | 'pending'; description: string };
 export const songs: Song[] = [
-  { id: 'lag-ja-gale', title: 'Lag Ja Gale', language: 'Hindi', status: 'pending', description: 'Arrangement pending. A reviewed score, source credits, and permission checks are needed before practice is available.' },
-  { id: 'kal-ho-naa-ho', title: 'Kal Ho Naa Ho', language: 'Hindi', status: 'pending', description: 'Arrangement pending. No notes or reference recording are attached to this catalogue title.' },
-  { id: 'tum-hi-ho', title: 'Tum Hi Ho', language: 'Hindi', status: 'pending', description: 'Arrangement pending. Difficulty and note range will follow review of an approved transcription.' },
-  { id: 'pehla-nasha', title: 'Pehla Nasha', language: 'Hindi', status: 'pending', description: 'Arrangement pending. A reviewed, beat-accurate arrangement and content permissions are still needed.' },
-  { id: 'kesariya', title: 'Kesariya', language: 'Hindi', status: 'pending', description: 'Arrangement pending. There is no playable transcription or film audio in this release.' },
-  { id: 'vaseegara', title: 'Vaseegara · வசீகரா', language: 'Tamil', status: 'pending', description: 'Arrangement pending. An approved transcription, range review, and source credits are needed.' },
+  { id: 'lag-ja-gale', title: 'Lag Ja Gale', language: 'Hindi', status: 'ready', description: 'Classic Hindi melody simplified in Hindustani sargam for six-hole bansuri beginners. Ready for phrase practice.' },
+  { id: 'kal-ho-naa-ho', title: 'Kal Ho Naa Ho', language: 'Hindi', status: 'ready', description: 'Uplifting modern melody arranged phrase-by-phrase with 4/4 meter and clear breath rests.' },
+  { id: 'tum-hi-ho', title: 'Tum Hi Ho', language: 'Hindi', status: 'ready', description: 'Soulful melody arranged for relaxed phrasing from middle Sa to Pa. Ready to play.' },
+  { id: 'pehla-nasha', title: 'Pehla Nasha', language: 'Hindi', status: 'ready', description: 'Gentle romantic melody with comfortable transitions and lower Dha grounding.' },
+  { id: 'kesariya', title: 'Kesariya', language: 'Hindi', status: 'ready', description: 'Warm contemporary melody arranged with steady beats and approachable middle-octave range.' },
+  { id: 'vaseegara', title: 'Vaseegara · வசீகரா', language: 'Tamil', status: 'ready', description: 'Beloved Tamil melody arranged phrase-by-phrase in middle Sa–Dha range.' },
 ];
 
 function isRecord(value: unknown): value is Record<string, unknown> {
